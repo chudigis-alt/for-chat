@@ -1,0 +1,226 @@
+generator client {
+ provider = "prisma-client-js"
+}
+datasource db {
+ provider = "postgresql"
+ url = env("DATABASE_URL")
+ directUrl = env("DIRECT_URL")
+}
+
+model admins {
+ id Int @id
+ username String
+ password_hash String
+ must_change Int @default(1)
+ created_at String @default(dbgenerated("to_char(timezone('UTC', now()), 'YYYY-MM-DD HH24:MI:SS')"))
+ updated_at String @default(dbgenerated("to_char(timezone('UTC', now()), 'YYYY-MM-DD HH24:MI:SS')"))
+ @@unique([username])
+ back_sessions_admin_id sessions[] @relation("fk_sessions_9")
+ back_audit_logs_admin_id audit_logs[] @relation("fk_audit_logs_10")
+}
+
+model contact_messages {
+ id Int @id @default(autoincrement())
+ name String
+ email String
+ mobile String
+ subject String
+ message String
+ created_at String @default(dbgenerated("to_char(timezone('UTC', now()), 'YYYY-MM-DD HH24:MI:SS')"))
+ updated_at String @default(dbgenerated("to_char(timezone('UTC', now()), 'YYYY-MM-DD HH24:MI:SS')"))
+}
+
+model customers {
+ id String @id
+ name String
+ mobile String
+ email String?
+ created_at String @default(dbgenerated("to_char(timezone('UTC', now()), 'YYYY-MM-DD HH24:MI:SS')"))
+ updated_at String @default(dbgenerated("to_char(timezone('UTC', now()), 'YYYY-MM-DD HH24:MI:SS')"))
+ back_orders_customer_id orders[] @relation("fk_orders_5")
+}
+
+model inventory_movements {
+ id Int @id @default(autoincrement())
+ product_id Int
+ delta Int
+ reason String
+ order_id Int?
+ created_at String @default(dbgenerated("to_char(timezone('UTC', now()), 'YYYY-MM-DD HH24:MI:SS')"))
+ updated_at String @default(dbgenerated("to_char(timezone('UTC', now()), 'YYYY-MM-DD HH24:MI:SS')"))
+ @@index([product_id, created_at],map:"idx_inventory_product")
+ relation_order_id orders? @relation("fk_inventory_movements_1",fields:[order_id],references:[id],onDelete:NoAction,onUpdate:NoAction,map:"fk_inventory_movements_1")
+ relation_product_id products @relation("fk_inventory_movements_2",fields:[product_id],references:[id],onDelete:NoAction,onUpdate:NoAction,map:"fk_inventory_movements_2")
+}
+
+model rate_limits {
+ key String @id
+ count Int
+ expires BigInt
+ @@index([expires],map:"idx_limits_expiry")
+}
+
+model order_items {
+ id Int @id @default(autoincrement())
+ order_id Int
+ product_id Int
+ name String
+ size String
+ image String
+ unit_price Int
+ quantity Int
+ created_at String @default(dbgenerated("to_char(timezone('UTC', now()), 'YYYY-MM-DD HH24:MI:SS')"))
+ updated_at String @default(dbgenerated("to_char(timezone('UTC', now()), 'YYYY-MM-DD HH24:MI:SS')"))
+ @@index([order_id],map:"idx_items_order")
+ relation_product_id products @relation("fk_order_items_3",fields:[product_id],references:[id],onDelete:NoAction,onUpdate:NoAction,map:"fk_order_items_3")
+ relation_order_id orders @relation("fk_order_items_4",fields:[order_id],references:[id],onDelete:NoAction,onUpdate:NoAction,map:"fk_order_items_4")
+}
+
+model orders {
+ id Int @id @default(autoincrement())
+ number String
+ customer_id String
+ address String
+ barangay String
+ city String
+ province String
+ postal String
+ delivery_method String
+ subtotal Int
+ delivery_fee Int
+ total Int
+ status String
+ notes String @default("")
+ tracking_hash String
+ idempotency_key String
+ created_at String @default(dbgenerated("to_char(timezone('UTC', now()), 'YYYY-MM-DD HH24:MI:SS')"))
+ updated_at String @default(dbgenerated("to_char(timezone('UTC', now()), 'YYYY-MM-DD HH24:MI:SS')"))
+ region String @default("")
+ shipping_zone String @default("")
+ courier String @default("")
+ tracking_number String @default("")
+ @@index([status, created_at],map:"idx_orders_status_date")
+ @@index([customer_id],map:"idx_orders_customer")
+ @@unique([idempotency_key])
+ @@unique([number])
+ back_inventory_movements_order_id inventory_movements[] @relation("fk_inventory_movements_1")
+ back_order_items_order_id order_items[] @relation("fk_order_items_4")
+ relation_customer_id customers @relation("fk_orders_5",fields:[customer_id],references:[id],onDelete:NoAction,onUpdate:NoAction,map:"fk_orders_5")
+ back_payments_order_id payments? @relation("fk_payments_7")
+}
+
+model payments {
+ id Int @id @default(autoincrement())
+ order_id Int
+ method String
+ status String
+ proof_id String?
+ reason String @default("")
+ created_at String @default(dbgenerated("to_char(timezone('UTC', now()), 'YYYY-MM-DD HH24:MI:SS')"))
+ updated_at String @default(dbgenerated("to_char(timezone('UTC', now()), 'YYYY-MM-DD HH24:MI:SS')"))
+ @@unique([order_id])
+ relation_proof_id uploads? @relation("fk_payments_6",fields:[proof_id],references:[id],onDelete:NoAction,onUpdate:NoAction,map:"fk_payments_6")
+ relation_order_id orders @relation("fk_payments_7",fields:[order_id],references:[id],onDelete:NoAction,onUpdate:NoAction,map:"fk_payments_7")
+}
+
+model product_images {
+ id Int @id @default(autoincrement())
+ product_id Int
+ url String
+ created_at String @default(dbgenerated("to_char(timezone('UTC', now()), 'YYYY-MM-DD HH24:MI:SS')"))
+ updated_at String @default(dbgenerated("to_char(timezone('UTC', now()), 'YYYY-MM-DD HH24:MI:SS')"))
+ @@index([product_id],map:"idx_product_images_product")
+ relation_product_id products @relation("fk_product_images_8",fields:[product_id],references:[id],onDelete:Cascade,onUpdate:NoAction,map:"fk_product_images_8")
+}
+
+model products {
+ id Int @id @default(autoincrement())
+ name String
+ slug String
+ size String
+ price Int
+ stock Int @default(0)
+ description String
+ short_description String
+ image String
+ sku String
+ active Int @default(1)
+ featured Int @default(0)
+ deleted Int @default(0)
+ created_at String @default(dbgenerated("to_char(timezone('UTC', now()), 'YYYY-MM-DD HH24:MI:SS')"))
+ updated_at String @default(dbgenerated("to_char(timezone('UTC', now()), 'YYYY-MM-DD HH24:MI:SS')"))
+ @@index([deleted, active],map:"idx_products_active")
+ @@unique([sku])
+ @@unique([slug])
+ back_inventory_movements_product_id inventory_movements[] @relation("fk_inventory_movements_2")
+ back_order_items_product_id order_items[] @relation("fk_order_items_3")
+ back_product_images_product_id product_images[] @relation("fk_product_images_8")
+}
+
+model sessions {
+ token_hash String @id
+ admin_id Int
+ csrf String
+ expires BigInt
+ @@index([expires],map:"idx_sessions_expiry")
+ relation_admin_id admins @relation("fk_sessions_9",fields:[admin_id],references:[id],onDelete:Cascade,onUpdate:NoAction,map:"fk_sessions_9")
+}
+
+model store_settings {
+ key String @id
+ value String
+ created_at String @default(dbgenerated("to_char(timezone('UTC', now()), 'YYYY-MM-DD HH24:MI:SS')"))
+ updated_at String @default(dbgenerated("to_char(timezone('UTC', now()), 'YYYY-MM-DD HH24:MI:SS')"))
+}
+
+model uploads {
+ id String @id
+ kind String
+ mime String
+ size Int
+ claim_hash String?
+ claimed Int @default(0)
+ created_at String @default(dbgenerated("to_char(timezone('UTC', now()), 'YYYY-MM-DD HH24:MI:SS')"))
+ updated_at String @default(dbgenerated("to_char(timezone('UTC', now()), 'YYYY-MM-DD HH24:MI:SS')"))
+ back_payments_proof_id payments[] @relation("fk_payments_6")
+}
+
+model shipping_rates {
+ id Int @id @default(autoincrement())
+ name String
+ region String @default("")
+ province String @default("")
+ city String @default("")
+ rate Int
+ active Int @default(1)
+ cod_allowed Int @default(1)
+ created_at String @default(dbgenerated("to_char(timezone('UTC', now()), 'YYYY-MM-DD HH24:MI:SS')"))
+ updated_at String @default(dbgenerated("to_char(timezone('UTC', now()), 'YYYY-MM-DD HH24:MI:SS')"))
+ @@index([active, province, city],map:"idx_shipping_location")
+}
+
+model reseller_inquiries {
+ id Int @id @default(autoincrement())
+ name String
+ email String
+ mobile String
+ location String
+ facebook String @default("")
+ message String
+ status String @default("New")
+ created_at String @default(dbgenerated("to_char(timezone('UTC', now()), 'YYYY-MM-DD HH24:MI:SS')"))
+ updated_at String @default(dbgenerated("to_char(timezone('UTC', now()), 'YYYY-MM-DD HH24:MI:SS')"))
+ @@index([status, created_at],map:"idx_resellers_status")
+}
+
+model audit_logs {
+ id Int @id @default(autoincrement())
+ admin_id Int?
+ action String
+ entity_type String
+ entity_id String
+ metadata String @default("{}")
+ created_at String @default(dbgenerated("to_char(timezone('UTC', now()), 'YYYY-MM-DD HH24:MI:SS')"))
+ @@index([created_at],map:"idx_audit_date")
+ relation_admin_id admins? @relation("fk_audit_logs_10",fields:[admin_id],references:[id],onDelete:NoAction,onUpdate:NoAction,map:"fk_audit_logs_10")
+}

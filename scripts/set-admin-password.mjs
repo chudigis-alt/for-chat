@@ -1,0 +1,3 @@
+import bcrypt from 'bcryptjs';
+import fs from 'node:fs';
+let password='';for await(const chunk of process.stdin)password+=chunk;password=password.trim();if(!password||password.length>72)throw Error('Provide a password of 1–72 characters through standard input.');const hash=await bcrypt.hash(password,12);const existing=fs.existsSync('.env')?fs.readFileSync('.env','utf8'):'';const setting='ADMIN_SEED_HASH='+hash;const updated=/^ADMIN_SEED_HASH=.*$/m.test(existing)?existing.replace(/^ADMIN_SEED_HASH=.*$/m,setting):existing.trimEnd()+'\n'+setting+'\n';fs.writeFileSync('.env',updated,{mode:0o600});console.log('Initial password hash saved in ignored .env. Existing configuration was preserved.');

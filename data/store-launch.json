@@ -1,0 +1,197 @@
+{
+  "settings": {
+    "business_name": "BEL Home Made Chili Garlic",
+    "tagline": "A Kick in Every Bite",
+    "phone": "09695136928",
+    "address": "Livelihood, Village San Roque, Dau, Lubao, Pampanga",
+    "email": "",
+    "logo": "/assets/brand.png",
+    "hero_title": "Turn up the flavor.",
+    "hero_description": "Crispy garlic. Bold chili. Homemade goodness. A little spoonful that makes every meal memorable.",
+    "about": "BEL Home Made Chili Garlic started with one simple goal: make everyday meals more exciting. Our chili garlic brings together crispy garlic, flavorful chili, aromatic oil, and homemade goodness in every jar. Whether paired with rice, noodles, dumplings, or your favorite comfort food, BEL gives every meal that extra kick.",
+    "announcement": "Fresh batches available — a little kick of home in every jar.",
+    "announcement_enabled": true,
+    "cod_enabled": true,
+    "gcash_enabled": true,
+    "gcash_name": "",
+    "gcash_number": "",
+    "gcash_qr": "/assets/gcash-qr.jpg",
+    "delivery_fee": 30,
+    "free_delivery_threshold": 0,
+    "pickup_enabled": true,
+    "delivery_notes": "BEL delivers within Lubao with COD. Other cities require GCash payment before dispatch. Lalamove is arranged manually; rider fees are confirmed separately.",
+    "storage": "Keep the jar tightly closed and use a clean, dry spoon. Follow the storage and best-before instructions on your jar. Contact us if you need guidance.",
+    "facebook": "https://www.facebook.com/profile.php?id=61594711007748",
+    "instagram": "",
+    "tiktok": "",
+    "faqs": [
+      {
+        "q": "How spicy is BEL Chili Garlic?",
+        "a": "It brings a noticeable kick while keeping the garlic and savory flavors front and center."
+      },
+      {
+        "q": "What foods can I pair it with?",
+        "a": "Rice meals, siomai, dumplings, noodles, fried chicken, eggs, silog, pizza, and your favorite street food."
+      }
+    ],
+    "gcash_show_number": false,
+    "gcash_instructions": "After payment, place your order and send your Order Ticket together with your GCash receipt to our Facebook page for payment verification.",
+    "testimonials": [
+      {
+        "id": "aris-1",
+        "name": "Aris",
+        "text": "Ate Bel, salamat! Solid talaga—ang sarap and quality talaga. Walang sinabi yung binili ko sa Shopee.",
+        "visible": true,
+        "sort": 0
+      },
+      {
+        "id": "aris-2",
+        "name": "Aris",
+        "text": "Oo, masarap ate Bel, mabango pa.",
+        "visible": true,
+        "sort": 1
+      },
+      {
+        "id": "jo-1",
+        "name": "Jo",
+        "text": "Te Bel, ang sarap! Sakto lang yung anghang—hindi sobra, hindi rin kulang. Sa susunod ulit.",
+        "visible": true,
+        "sort": 2
+      },
+      {
+        "id": "anonymous-1",
+        "name": "Anonymous",
+        "text": "Masarap siya and bagay sa kahit anong ulam. Hindi tinipid sa lasa, kaya mapapa-order ka ulit.",
+        "visible": true,
+        "sort": 3
+      },
+      {
+        "id": "anonymous-2",
+        "name": "Anonymous",
+        "text": "Ang gusto ko dito, lasa pa lang alam mong homemade talaga. Balanced yung garlic at anghang, very satisfying.",
+        "visible": true,
+        "sort": 4
+      }
+    ],
+    "lalamove_enabled": true
+  },
+  "shipping": [
+    {
+      "name": "Metro Manila base delivery",
+      "region": "",
+      "province": "Metro Manila",
+      "city": "",
+      "rate": 9500,
+      "active": 1,
+      "cod_allowed": 0
+    },
+    {
+      "name": "Luzon base delivery",
+      "region": "Luzon",
+      "province": "",
+      "city": "",
+      "rate": 8500,
+      "active": 1,
+      "cod_allowed": 0
+    },
+    {
+      "name": "Visayas base delivery",
+      "region": "Visayas",
+      "province": "",
+      "city": "",
+      "rate": 10000,
+      "active": 1,
+      "cod_allowed": 0
+    },
+    {
+      "name": "Mindanao base delivery",
+      "region": "Mindanao",
+      "province": "",
+      "city": "",
+      "rate": 10500,
+      "active": 1,
+      "cod_allowed": 0
+    },
+    {
+      "name": "Island base delivery",
+      "region": "",
+      "province": "Batanes",
+      "city": "",
+      "rate": 11500,
+      "active": 1,
+      "cod_allowed": 0
+    },
+    {
+      "name": "Island base delivery",
+      "region": "",
+      "province": "Palawan",
+      "city": "",
+      "rate": 11500,
+      "active": 1,
+      "cod_allowed": 0
+    },
+    {
+      "name": "Island base delivery",
+      "region": "",
+      "province": "Marinduque",
+      "city": "",
+      "rate": 11500,
+      "active": 1,
+      "cod_allowed": 0
+    },
+    {
+      "name": "Island base delivery",
+      "region": "",
+      "province": "Romblon",
+      "city": "",
+      "rate": 11500,
+      "active": 1,
+      "cod_allowed": 0
+    },
+    {
+      "name": "Island base delivery",
+      "region": "",
+      "province": "Masbate",
+      "city": "",
+      "rate": 11500,
+      "active": 1,
+      "cod_allowed": 0
+    },
+    {
+      "name": "Island base delivery",
+      "region": "",
+      "province": "Catanduanes",
+      "city": "",
+      "rate": 11500,
+      "active": 1,
+      "cod_allowed": 0
+    },
+    {
+      "name": "Island base delivery",
+      "region": "",
+      "province": "Occidental Mindoro",
+      "city": "",
+      "rate": 11500,
+      "active": 1,
+      "cod_allowed": 0
+    },
+    {
+      "name": "Island base delivery",
+      "region": "",
+      "province": "Oriental Mindoro",
+      "city": "",
+      "rate": 11500,
+      "active": 1,
+      "cod_allowed": 0
+    },
+    {
+      "name": "BEL local delivery · Lubao",
+      "region": "",
+      "province": "Pampanga",
+      "city": "Lubao",
+      "rate": 0,
+      "active": 1,
+      "cod_allowed": 1
+    }
+  ]
+}

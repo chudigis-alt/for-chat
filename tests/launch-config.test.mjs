@@ -1,0 +1,24 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import bcrypt from 'bcryptjs';
+import {PGlite} from '@electric-sql/pglite';
+import {localDatabase} from '../server/local-db.mjs';
+import {postgresDatabase} from '../server/postgres.mjs';
+import {seed} from '../server/seed.mjs';
+import {importLaunchConfig} from '../server/launch-config.mjs';
+for(const driver of ['sqlite','postgresql'])test('Launch configuration imports QR/settings/rates without customer data: '+driver,async()=>{
+ let pg;
+ const db=driver==='sqlite'?localDatabase(':memory:'):await(async()=>{pg=new PGlite();await pg.exec(fs.readFileSync('prisma/migrations/202610040001_initial/migration.sql','utf8'));const executor=tx=>({$queryRawUnsafe:async(sql,...args)=>(await tx.query(sql,args)).rows,$executeRawUnsafe:async(sql,...args)=>(await tx.query(sql,args)).affectedRows||0});return postgresDatabase({...executor(pg),$transaction:cb=>pg.transaction(tx=>cb(executor(tx)))})})();
+ await seed({DB:db,ADMIN_SEED_HASH:await bcrypt.hash('Launch-Fixture-42',12),ADMIN_REQUIRE_PASSWORD_CHANGE:'false'});
+ const config=JSON.parse(fs.readFileSync('data/store-launch.json','utf8'));await importLaunchConfig(db,config);
+ assert.equal((await db.prepare('SELECT must_change FROM admins WHERE username=?').bind('bel').first()).must_change,0);
+ assert.equal(Number((await db.prepare('SELECT COUNT(*) AS count FROM shipping_rates').first()).count),config.shipping.length);
+ assert.equal(Number((await db.prepare('SELECT COUNT(*) AS count FROM orders').first()).count),0);
+ assert.equal(Number((await db.prepare('SELECT COUNT(*) AS count FROM customers').first()).count),0);
+ assert.match(config.settings.gcash_qr,/^\/assets\/gcash-qr\.(png|jpg|webp)$/);assert.ok(fs.statSync('public'+config.settings.gcash_qr).size>0);
+ assert.equal(config.settings.facebook,'https://www.facebook.com/profile.php?id=61594711007748');
+ assert.equal(config.shipping.find(r=>r.city==='Lubao').cod_allowed,1);assert.ok(config.shipping.filter(r=>r.city!=='Lubao').every(r=>r.cod_allowed===0));
+ const id=(await db.prepare('SELECT id FROM shipping_rates ORDER BY id LIMIT 1').first()).id;await db.prepare('UPDATE shipping_rates SET rate=1234 WHERE id=?').bind(id).run();await importLaunchConfig(db,config);assert.equal((await db.prepare('SELECT rate FROM shipping_rates WHERE id=?').bind(id).first()).rate,1234);
+ if(db.close)db.close();if(pg)await pg.close();
+});
