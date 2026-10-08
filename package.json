@@ -11,7 +11,8 @@
     "start": "next start -H 127.0.0.1 -p 5173",
     "db:migrate": "prisma migrate deploy",
     "db:seed": "node scripts/seed-production.mjs",
-    "db:client": "prisma generate"
+    "db:client": "prisma generate",
+    "build:pages": "node scripts/build-pages.mjs"
   },
   "dependencies": {
     "@prisma/client": "^6.19.0",
@@ -25,8 +26,9 @@
     "sharp": "^0.35.5"
   },
   "devDependencies": {
-    "prisma": "^6.19.0",
-    "@electric-sql/pglite": "^0.3.14"
+    "@electric-sql/pglite": "^0.3.14",
+    "esbuild": "0.28.2",
+    "prisma": "^6.19.0"
   },
   "overrides": {
     "deepmerge-ts": "^8.0.0",

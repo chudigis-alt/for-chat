@@ -116,3 +116,5 @@ th { text-transform:none; letter-spacing:0; }
 
 .modal-heading .icon-button { gap:6px; flex-shrink:0; }
 @media(max-width:600px) { .modal { padding:22px 16px; } .modal-heading { flex-wrap:wrap; gap:12px; } }
+
+.pages-preview-notice { padding:14px 20px; background:#fff0c7; border-bottom:2px solid #8b6527; color:#43341a; font-size:18px; line-height:1.5; text-align:center; }

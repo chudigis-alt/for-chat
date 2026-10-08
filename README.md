@@ -1,6 +1,6 @@
 # BEL Home Made Chili Garlic
 
-For deployment from GitHub without Vercel, follow [DEPLOY-RENDER.md](DEPLOY-RENDER.md). The included Render Blueprint prepares the full shop, PostgreSQL, persistent uploads, and initial admin setup. Review hosting charges before deployment.
+For the free GitHub Pages design preview, follow [DEPLOY-GITHUB-PAGES.md](DEPLOY-GITHUB-PAGES.md). It previews the shop and admin with sample data; real orders, payments, and admin changes require the full server-backed application.
 
 For the current launch package, follow [DEPLOY-VERCEL.md](DEPLOY-VERCEL.md). It includes the exported business settings, uploaded QR, and shipping configuration. Credentials are supplied separately in a private environment file.
 
