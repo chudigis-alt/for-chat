@@ -1,4 +1,4 @@
-import {previewApi} from '../pages/api.mjs';
+import {previewApi} from '../preview/api.mjs';
 import React,{createContext,useContext,useState,useEffect,useCallback} from 'react';
 export let csrf='';export const setCsrf=t=>{csrf=t||''};
 export async function api(path,options={}){if(process.env.NEXT_PUBLIC_PAGES_PREVIEW==='true')return previewApi(path,options);const r=await fetch('/api'+path,{...options,headers:{...(options.body instanceof FormData?{}:{'Content-Type':'application/json'}),'X-CSRF-Token':csrf,...options.headers},body:options.body instanceof FormData?options.body:options.body===undefined?undefined:JSON.stringify(options.body)});const data=await r.json();if(!r.ok){if(r.status===401&&path.startsWith('/admin/')&&path!=='/admin/login')window.dispatchEvent(new Event('bel-admin-expired'));const e=new Error(data.error||'Something went wrong. Please try again.');e.status=r.status;throw e}return data}

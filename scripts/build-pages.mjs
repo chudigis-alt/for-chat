@@ -22,7 +22,7 @@ try {
  const encoded=JSON.stringify(snapshot,(_,v)=>typeof v==='string'&&v.startsWith('/assets/')?base+imageUrl(v).slice(1):v);
  fs.writeFileSync(output+'/preview-data.json',encoded);
 } finally {DB.close();}
-await build({entryPoints:['pages/entry.jsx'],bundle:true,format:'esm',minify:true,outfile:output+'/site.js',define:{'process.env.NODE_ENV':'"production"','process.env.NEXT_PUBLIC_PAGES_PREVIEW':'"true"'},plugins:[{name:'pages-asset-paths',setup(builder){builder.onLoad({filter:/\/src\/.*\.jsx$/},async args=>({contents:(await fs.promises.readFile(args.path,'utf8')).replaceAll('/assets/',base+'assets/'),loader:'jsx'}));}}]});
+await build({entryPoints:['preview/entry.jsx'],bundle:true,format:'esm',minify:true,outfile:output+'/site.js',define:{'process.env.NODE_ENV':'"production"','process.env.NEXT_PUBLIC_PAGES_PREVIEW':'"true"'},plugins:[{name:'pages-asset-paths',setup(builder){builder.onLoad({filter:/\/src\/.*\.jsx$/},async args=>({contents:(await fs.promises.readFile(args.path,'utf8')).replaceAll('/assets/',base+'assets/'),loader:'jsx'}));}}]});
 fs.writeFileSync(output+'/index.html',`<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>BEL website design preview</title><base href="${base}"><link rel="icon" href="favicon.svg"><link rel="stylesheet" href="site.css"></head><body><div id="root"></div><script type="module" src="site.js"></script></body></html>`);
 fs.writeFileSync(output+'/.nojekyll','');
 console.log('Built static design preview in '+output+' with base '+base);
