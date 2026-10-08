@@ -1,5 +1,7 @@
 # BEL Home Made Chili Garlic
 
+For deployment from GitHub without Vercel, follow [DEPLOY-RENDER.md](DEPLOY-RENDER.md). The included Render Blueprint prepares the full shop, PostgreSQL, persistent uploads, and initial admin setup. Review hosting charges before deployment.
+
 For the current launch package, follow [DEPLOY-VERCEL.md](DEPLOY-VERCEL.md). It includes the exported business settings, uploaded QR, and shipping configuration. Credentials are supplied separately in a private environment file.
 
 A responsive small-business shop built with Next.js 15, React 19, Prisma, PostgreSQL, and Vercel Blob. The original supplied photographs are retained; smaller WebP derivatives are used on the storefront.

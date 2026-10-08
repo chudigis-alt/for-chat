@@ -1,0 +1,36 @@
+# Review Render's current pricing before deploying these persistent services.
+services:
+  - type: web
+    name: bel-chili-garlic
+    runtime: node
+    plan: starter
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: bash scripts/start-render.sh
+    healthCheckPath: /api/health
+    disk:
+      name: bel-uploads
+      mountPath: /var/data/bel
+      sizeGB: 1
+    envVars:
+      - key: NODE_VERSION
+        value: 24.19.0
+      - key: DATABASE_URL
+        fromDatabase:
+          name: bel-database
+          property: connectionString
+      - key: DIRECT_URL
+        fromDatabase:
+          name: bel-database
+          property: connectionString
+      - key: BEL_UPLOAD_DIR
+        value: /var/data/bel/uploads
+      - key: ADMIN_INITIAL_PASSWORD
+        generateValue: true
+      - key: ADMIN_REQUIRE_PASSWORD_CHANGE
+        value: "true"
+
+databases:
+  - name: bel-database
+    plan: basic-256mb
+    databaseName: bel
+    user: bel
