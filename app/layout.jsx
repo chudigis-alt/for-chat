@@ -1,4 +1,5 @@
 import "../src/tweentees/style.css";
+import "../src/tweentees/home.css";
 export const metadata = {
   title: {
     default: "TweenTees — Your Design. Our Craft.",
