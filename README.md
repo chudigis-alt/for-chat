@@ -2,7 +2,7 @@
 
 A working custom sportswear inquiry website built from the supplied TweenTees Figma file. The design describes a made-to-order quotation workflow: customize apparel, collect quantities and customer details, submit an inquiry, and review it in the protected admin dashboard. Estimates are not payment confirmations. No payment gateway, email delivery, or courier integration is configured.
 
-The implementation preserves the existing Next.js/React stack. It uses original extracted Figma artwork, locally hosted Arimo/Inter fonts, responsive public pages, and real server-backed administration. See [DESIGN-AUDIT.md](DESIGN-AUDIT.md) for the 17-frame route map and interpretation of missing states.
+The implementation preserves the existing Next.js/React stack. It uses artwork extracted from Figma, with homepage garment cutouts edited to remove backgrounds at the owner’s request, locally hosted Arimo/Inter fonts, responsive public pages, and real server-backed administration. See [DESIGN-AUDIT.md](DESIGN-AUDIT.md) for the 17-frame route map and interpretation of missing states.
 
 ## Run locally
 

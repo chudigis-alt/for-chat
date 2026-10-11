@@ -41,3 +41,7 @@ Missing error/loading/empty/password-change states follow the same tokens. Admin
 Desktop contact email is twenteesph@gmail.com; mobile shows rodelmarkpontaoy@gmail.com. The user resolved this conflict by supplying rodelmarkpontaoy@gmail.com, phone 0910 143 8872, and the Facebook, Instagram and TikTok profile URLs now used by the editable site settings. The desktop business address is the editable default. Reference numbers and dates in designs are illustrative; actual submissions generate unique references and timestamps. Fabric spelling differs (RIBSTOP/Ripstop); catalog uses Ripstop 90gsm.
 
 No production database, email transport, payment gateway or courier integration has been supplied. Contact and inquiries persist in the database and require manual admin review. No automatic payment verification or email delivery is claimed.
+
+## Owner-requested visual revisions
+
+After reviewing the implementation, the owner requested clearer spacing and removal of the apparel image backgrounds. Homepage hero and category garment images now use transparent edited cutouts on white surfaces; category copy and images occupy separate grid cells, and desktop/mobile layouts were checked again. These revisions intentionally follow the later user direction. Other supplied design assets remain in use.
