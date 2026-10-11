@@ -11,3 +11,6 @@ dist/
 *.log
 
 pages-dist/
+
+.next-qa/
+.qa-results/

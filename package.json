@@ -1,25 +1,28 @@
 {
-  "name": "bel-chili-garlic",
+  "name": "tweentees",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "next dev -H 127.0.0.1 -p 5173",
-    "build": "prisma generate && next build",
-    "db:generate": "prisma migrate dev",
-    "test": "node --test tests/*.test.mjs",
+    "build": "next build",
+    "test": "node --test tests/tweentees/*.test.mjs",
     "validate": "node scripts/validate-production.mjs",
     "start": "next start -H 127.0.0.1 -p 5173",
-    "db:migrate": "prisma migrate deploy",
-    "db:seed": "node scripts/seed-production.mjs",
-    "db:client": "prisma generate",
-    "build:pages": "node scripts/build-pages.mjs"
+    "db:migrate": "node scripts/tween-setup.mjs",
+    "db:seed": "node scripts/tween-setup.mjs",
+    "admin:init": "node scripts/tween-admin.mjs",
+    "test:legacy": "node --test tests/*.test.mjs"
   },
   "dependencies": {
+    "@fontsource/arimo": "5.2.8",
+    "@fontsource/inter": "5.2.8",
     "@prisma/client": "^6.19.0",
     "@vercel/blob": "^2.0.0",
     "bcryptjs": "^3.0.2",
     "lucide-react": "^0.468.0",
     "next": "^15.5.0",
+    "pdf-lib": "1.17.1",
+    "pg": "8.16.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.6.2",
@@ -28,6 +31,7 @@
   "devDependencies": {
     "@electric-sql/pglite": "^0.3.14",
     "esbuild": "0.28.2",
+    "playwright": "1.56.1",
     "prisma": "^6.19.0"
   },
   "overrides": {

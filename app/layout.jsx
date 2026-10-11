@@ -1,5 +1,17 @@
-import '../src/style.css';
-import '../src/revised.css';
-import '../src/accessibility.css';
-export const metadata={title:{default:'BEL Home Made Chili Garlic — A Kick in Every Bite',template:'%s | BEL'},description:'Homemade chili garlic from Lubao, Pampanga. Shop 100g and 200g jars, order for delivery or pickup, and add a kick to every bite.'};
-export default function RootLayout({children}){return <html lang="en"><body>{children}</body></html>}
+import "../src/tweentees/style.css";
+export const metadata = {
+  title: {
+    default: "TweenTees — Your Design. Our Craft.",
+    template: "%s | TweenTees",
+  },
+  description:
+    "Custom sportswear for teams, events and athletes. Choose your apparel, fabric and sizes and request a quotation from TweenTees.",
+  icons: { icon: "/tweentees/logo.webp" },
+};
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en">
+      <body>{children}</body>
+    </html>
+  );
+}

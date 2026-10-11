@@ -1,12 +1,21 @@
-import {environment} from '../../../server/environment.mjs';
-export const runtime = 'nodejs';
-export const dynamic = 'force-dynamic';
+import { database } from "../../../server/tweentees/db.mjs";
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 export async function GET() {
   try {
-    const {DB} = await environment();
-    await DB.prepare('SELECT COUNT(*) AS count FROM products').first();
-    return Response.json({status: 'ok'}, {headers: {'Cache-Control': 'no-store'}});
+    const rows = await database().query(
+      "SELECT id FROM tt_settings WHERE id=?",
+      ["website"],
+    );
+    if (!rows.length) throw Error("Setup required");
+    return Response.json(
+      { ok: true },
+      { headers: { "Cache-Control": "no-store" } },
+    );
   } catch {
-    return Response.json({status: 'unavailable'}, {status: 503, headers: {'Cache-Control': 'no-store'}});
+    return Response.json(
+      { ok: false },
+      { status: 503, headers: { "Cache-Control": "no-store" } },
+    );
   }
 }

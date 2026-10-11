@@ -1,6 +1,4 @@
-import {handle} from '../../../server/api.mjs';
-import {environment} from '../../../server/environment.mjs';
-export const runtime='nodejs';
+// The previous BEL application is archived in source and is not an active API.
 export const dynamic='force-dynamic';
-async function dispatch(req){let result;try{result=await handle(req,await environment())}catch{result=Response.json({error:'The store is temporarily unavailable.'},{status:503})}result.headers.set('Cache-Control','private, no-store');result.headers.set('X-Robots-Tag','noindex, nofollow');return result;}
-export {dispatch as GET,dispatch as POST,dispatch as PUT,dispatch as DELETE,dispatch as PATCH,dispatch as OPTIONS,dispatch as HEAD};
+function retired(){return Response.json({error:'This endpoint is no longer available.'},{status:410,headers:{'Cache-Control':'no-store'}});}
+export {retired as GET,retired as POST,retired as PUT,retired as DELETE,retired as PATCH,retired as OPTIONS};
