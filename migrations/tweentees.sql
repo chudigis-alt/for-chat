@@ -12,3 +12,6 @@ CREATE TABLE IF NOT EXISTS tt_messages (id TEXT PRIMARY KEY, name TEXT NOT NULL,
 CREATE TABLE IF NOT EXISTS tt_uploads (id TEXT PRIMARY KEY, access_hash TEXT NOT NULL, mime TEXT NOT NULL, filename TEXT NOT NULL, purpose TEXT NOT NULL CHECK(purpose IN ('design','image')), created BIGINT NOT NULL);
 CREATE TABLE IF NOT EXISTS tt_limits (id TEXT PRIMARY KEY, count INTEGER NOT NULL, expires BIGINT NOT NULL);
 CREATE TABLE IF NOT EXISTS tt_audit (id TEXT PRIMARY KEY, admin_id TEXT, action TEXT NOT NULL, entity TEXT NOT NULL, created BIGINT NOT NULL);
+
+-- Private durable upload bytes for serverless hosts; metadata/API enforce access.
+CREATE TABLE IF NOT EXISTS tt_file_objects (id TEXT PRIMARY KEY, bytes_base64 TEXT NOT NULL CHECK(length(bytes_base64)<=5592408));

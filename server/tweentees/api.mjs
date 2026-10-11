@@ -185,7 +185,39 @@ function parseInquiry(r) {
     idempotency_key: undefined,
   };
 }
-async function fileStore(config) {
+const databaseUploads = (config) =>
+  config.TWEEN_UPLOAD_STORAGE === "database" ||
+  (config.NODE_ENV === "production" &&
+    !config.TWEEN_UPLOAD_DIR &&
+    !config.BLOB_READ_WRITE_TOKEN);
+const uploadLimitMB = (config) => {
+  const maximum = databaseUploads(config) ? 4 : 10;
+  const configured = Number(config.TWEEN_MAX_UPLOAD_MB || maximum);
+  if (!Number.isFinite(configured) || configured < 1)
+    throw Error("Invalid upload limit configuration");
+  return Math.min(configured, maximum);
+};
+async function fileStore(config, db) {
+  if (databaseUploads(config))
+    return {
+      put: async (key, bytes) => {
+        if (bytes.length > uploadLimitMB(config) * 1024 * 1024)
+          fail("Processed file exceeds the upload limit.");
+        await db.query(
+          "INSERT INTO tt_file_objects (id,bytes_base64) VALUES (?,?)",
+          [key, bytes.toString("base64")],
+        );
+      },
+      get: async (key) => {
+        const [row] = await db.query(
+          "SELECT bytes_base64 FROM tt_file_objects WHERE id=?",
+          [key],
+        );
+        if (!row) throw Error("Missing file");
+        return Buffer.from(row.bytes_base64, "base64");
+      },
+      del: (key) => db.query("DELETE FROM tt_file_objects WHERE id=?", [key]),
+    };
   const directory =
     config.TWEEN_UPLOAD_DIR ||
     (config.NODE_ENV !== "production" ? ".data/tweentees-uploads" : null);
@@ -223,7 +255,7 @@ async function fileStore(config) {
       del("tweentees/" + key, { token: config.BLOB_READ_WRITE_TOKEN }),
   };
 }
-// Public Blob objects are unsuitable for confidential design files. Production designs require a private mounted disk.
+// Confidential designs require database storage or a private persistent disk.
 async function upload(req, db, s, config) {
   await limit(req, db, "upload", 30, config);
   const input = await req.formData(),
@@ -234,16 +266,17 @@ async function upload(req, db, s, config) {
   if (
     config.NODE_ENV === "production" &&
     purpose === "design" &&
-    !config.TWEEN_UPLOAD_DIR
+    !config.TWEEN_UPLOAD_DIR &&
+    !databaseUploads(config)
   )
     fail("Private design storage is not configured.", 503);
   if (
     !file ||
     typeof file.arrayBuffer !== "function" ||
     file.size === 0 ||
-    file.size > 10 * 1024 * 1024
+    file.size > uploadLimitMB(config) * 1024 * 1024
   )
-    fail("Choose a file no larger than 10 MB.");
+    fail(`Choose a file no larger than ${uploadLimitMB(config)} MB.`);
   let bytes = Buffer.from(await file.arrayBuffer()),
     mime,
     filename;
@@ -305,7 +338,7 @@ async function upload(req, db, s, config) {
     );
   const fileId = randomUUID(),
     token = secret(),
-    store = await fileStore(config);
+    store = await fileStore(config, db);
   await store.put(fileId, bytes, mime);
   try {
     await db.query(
@@ -412,7 +445,11 @@ export async function handle(
         fail("Session validation failed. Refresh and try again.", 403);
     }
     if (p === "/catalog" && req.method === "GET")
-      return json({ records: await catalog(db), settings: await settings(db) });
+      return json({
+        records: await catalog(db),
+        settings: await settings(db),
+        upload_limit_mb: uploadLimitMB(config),
+      });
     if (p === "/admin/session" && req.method === "GET")
       return json(
         s
@@ -526,7 +563,7 @@ export async function handle(
           !safeEqual(hash(url.searchParams.get("token") || ""), f.access_hash))
       )
         fail("File not found.", 404);
-      const bytes = await (await fileStore(config)).get(f.id);
+      const bytes = await (await fileStore(config, db)).get(f.id);
       return new Response(bytes, {
         headers: {
           "Content-Type": f.mime,

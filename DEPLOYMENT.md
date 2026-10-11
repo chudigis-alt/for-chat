@@ -38,3 +38,7 @@ Enable encrypted managed PostgreSQL backups/PITR and verify the retention/recove
 Practice restoration into a separate database and private disk: restore the database, restore the corresponding upload snapshot, load the new connection/origin configuration, revoke restored sessions with `DELETE FROM tt_sessions`, start the app, and verify an existing private upload and inquiry. Do not test restores against the live database. Rotate compromised credentials before recovery. Document the successful restore time and the selected backup with the client.
 
 Configure uptime/error monitoring without recording passwords, tokens, upload access URLs or customer payloads. Establish client-approved customer-data retention and deletion procedures, including orphan-upload cleanup and backup retention. Automatic retention deletion and malware scanning are not implemented; format validation is not a malware scanner. Restrict administrative database/host access accordingly.
+
+## Serverless database upload option
+
+Netlify and other serverless hosts can set `TWEEN_UPLOAD_STORAGE=database`, leave `TWEEN_UPLOAD_DIR` empty, and use the `tt_file_objects` table for durable private files (4 MB maximum). Without disk or Blob configuration, production defaults to database upload storage. The public Blob restrictions above still apply when that adapter is explicitly used. Database-mode backups include file bytes. See NETLIFY.md for configuration and host payload limits.

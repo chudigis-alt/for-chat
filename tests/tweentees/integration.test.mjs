@@ -67,6 +67,7 @@ for (const engine of ["sqlite", "postgresql"])
       body,
       auth = false,
       extra = {},
+      overrideConfig = {},
     ) {
       const form = body instanceof FormData;
       const headers = {
@@ -85,7 +86,7 @@ for (const engine of ["sqlite", "postgresql"])
             ? {}
             : { body: form ? body : JSON.stringify(body) }),
         }),
-        { db, config },
+        { db, config: { ...config, ...overrideConfig } },
       );
       return {
         status: r.status,
@@ -529,6 +530,102 @@ for (const engine of ["sqlite", "postgresql"])
               )
             ).status,
             201,
+          );
+        },
+      );
+      await t.test(
+        "serverless database uploads persist privately and enforce transport limits",
+        async () => {
+          const serverless = {
+            NODE_ENV: "production",
+            TWEEN_UPLOAD_DIR: "",
+            TWEEN_UPLOAD_STORAGE: "database",
+          };
+          const form = (bytes) => {
+            const f = new FormData();
+            f.set("purpose", "design");
+            f.set(
+              "file",
+              new File([bytes], "design.png", { type: "image/png" }),
+            );
+            return f;
+          };
+          const image = await sharp({
+            create: { width: 20, height: 20, channels: 3, background: "white" },
+          })
+            .png()
+            .toBuffer();
+          const response = await request(
+            "/uploads",
+            "POST",
+            form(image),
+            false,
+            {},
+            serverless,
+          );
+          assert.equal(response.status, 201);
+          const file = response.data;
+          const [object] = await db.query(
+            "SELECT bytes_base64 FROM tt_file_objects WHERE id=?",
+            [file.id],
+          );
+          assert.ok(object.bytes_base64.length > 0);
+          assert.equal(
+            (
+              await request(
+                "/files/" + file.id,
+                "GET",
+                undefined,
+                false,
+                {},
+                serverless,
+              )
+            ).status,
+            404,
+          );
+          assert.equal(
+            (
+              await request(
+                "/files/" + file.id + "?token=wrong",
+                "GET",
+                undefined,
+                false,
+                {},
+                serverless,
+              )
+            ).status,
+            404,
+          );
+          const downloaded = await request(
+            "/files/" + file.id + "?token=" + file.token,
+            "GET",
+            undefined,
+            false,
+            {},
+            serverless,
+          );
+          assert.equal(downloaded.status, 200);
+          assert.deepEqual(
+            downloaded.data,
+            Buffer.from(object.bytes_base64, "base64"),
+          );
+          assert.equal(
+            (
+              await request(
+                "/uploads",
+                "POST",
+                form(Buffer.alloc(5 * 1024 * 1024)),
+                false,
+                {},
+                serverless,
+              )
+            ).status,
+            400,
+          );
+          assert.equal(
+            (await request("/catalog", "GET", undefined, false, {}, serverless))
+              .data.upload_limit_mb,
+            4,
           );
         },
       );

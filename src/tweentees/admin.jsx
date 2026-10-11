@@ -132,6 +132,7 @@ function PasswordForm({ initial = false, onChanged }) {
   );
 }
 function UploadImage({ value, onChange }) {
+  const { uploadLimitMB } = useTween();
   const action = useAction();
   return (
     <div className="image-editor">
@@ -145,6 +146,10 @@ function UploadImage({ value, onChange }) {
             const file = e.target.files[0];
             if (file)
               action.run(async () => {
+                if (file.size > uploadLimitMB * 1024 * 1024)
+                  throw Error(
+                    `Choose a file no larger than ${uploadLimitMB} MB.`,
+                  );
                 const form = new FormData();
                 form.set("file", file);
                 form.set("purpose", "image");

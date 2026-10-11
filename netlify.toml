@@ -1,0 +1,11 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "24"
+
+# Netlify detects Next.js and installs its Next.js runtime automatically.
+# This is a server application, not a static export or a drag-and-drop HTML site.
+# Configure DATABASE_URL and APP_ORIGIN in Netlify's secret/environment settings.
+# See NETLIFY.md for initial database/admin setup and private upload storage.

@@ -74,3 +74,7 @@ npm run build
 ```
 
 See [TESTING.md](TESTING.md) for tested workflows, isolated browser execution and remaining verification requirements; [DEPLOYMENT.md](DEPLOYMENT.md) for production hosting/storage/TLS/backups; and [HANDOVER.md](HANDOVER.md) for client ownership and credential rotation. A successful local build is not evidence that a live deployment has been verified.
+
+## Netlify hosting
+
+See [NETLIFY.md](NETLIFY.md) and `netlify.toml` for Git-based Next.js deployment. Netlify uses durable private PostgreSQL upload storage with a 4 MB limit; no persistent function disk is needed. Configure the production database/origin, migrate, and initialize the admin account once before accepting customers. Source ZIP drag-and-drop does not deploy this server application.

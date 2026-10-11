@@ -86,6 +86,7 @@ function Provider({ children }) {
         setNotes,
         records: catalog?.records || [],
         settings: catalog?.settings,
+        uploadLimitMB: catalog?.upload_limit_mb || 10,
       }}
     >
       {children}
@@ -540,7 +541,7 @@ function Catalog() {
   );
 }
 function Customize() {
-  const { records, cart, setCart } = useTween(),
+  const { records, cart, setCart, uploadLimitMB } = useTween(),
     loc = useLocation(),
     nav = useNavigate(),
     productId = loc.pathname.split("/")[2],
@@ -758,7 +759,11 @@ function Customize() {
             <p>Upload your own design or request design assistance.</p>
             <div className="design-options">
               {[
-                ["upload", "Upload Design", "PNG, JPG or PDF (Max 10MB)"],
+                [
+                  "upload",
+                  "Upload Design",
+                  `PNG, JPG or PDF (Max ${uploadLimitMB}MB)`,
+                ],
                 [
                   "assistance",
                   "Request Design Assistance",
@@ -790,6 +795,10 @@ function Customize() {
                     setUpload(null);
                     if (file)
                       action.run(async () => {
+                        if (file.size > uploadLimitMB * 1024 * 1024)
+                          throw Error(
+                            `Choose a file no larger than ${uploadLimitMB} MB.`,
+                          );
                         const data = new FormData();
                         data.set("file", file);
                         data.set("purpose", "design");
